@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor's Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-QsHKsL+IoYDlJ3BzpCuuqlSFjEWtLuxEx+sM8wgarPtOzBy56WvCuQ+GVvexFkWTRqyPWkECUHdFuHWJDsBVrQQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+        NeuroSight Analytics
+    </div>
+    
+    <div class="search-bar">
+      <input type="text" placeholder="Search appointment, patient...">
+      <button><i class="fas fa-search"></i></button>
+    </div>
+    <div class="user-info">
+        <p>Good Morning, Dr. <span class="last-name">{{ session.username }}</span></p>
+        <button>View Profile</button>
+    </div>
+  </header>
+
+  <nav class="sidebar">
+    <ul>
+      <li><a href="#"><i class="fas fa-calendar-alt"></i> Appointment History</a></li>
+      <li><a href="#"><i class="fas fa-user-plus"></i> + Add Patients</a></li>
+      <li><a href="#"><i class="fas fa-calendar"></i> Schedule</a></li>
+      <li><a href="#"><i class="fas fa-chart-line"></i> Reports</a></li>
+      <li><a href="#"><i class="fas fa-envelope"></i> Messages</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+
+    <section class="top-metrics">
+      <h2>Quick Stats</h2>
+      <div class="metric">
+        <h2>Total Patients</h2>
+        <p>356</p>
+      </div>
+      <div class="metric">
+        <h2>Phone Calls (This Week)</h2> <p>288</p>
+      </div>
+      <div class="metric">
+        <h2>Appointments (Today)</h2> <p>5</p>
+      </div>
+      <div class="metric">
+        <h2>Upcoming Appointment</h2>
+        <p>10:00 AM <span class="appointment-type">(Follow-up)</span></p> </div>
+    </section>
+
+    <section class="appointments">
+      <h2>My Appointments (Today)</h2> <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>David Lald</td>
+            <td>New York</td>
+            <td>25 Jun 2023</td>
+            <td>01:00 PM</td>
+            <td>Pending</td>
+          </tr>
+          <tr>
+            <td>Shople Rose</td>
+            <td>Down Town</td>
+            <td>24 Jun 2023</td>
+            <td>05:00 PM</td>
+            <td>Completed</td>
+          </tr>
+        </tbody>
+      </table>
+      <a href="#" class="view-all-appointments">View All Appointments</a> </section>
+
+    <section class="calendar">
+      <h2>Schedule Calendar</h2>
+      <div class="calendar-header">
+        <button>&lt;</button>
+        <p>June 2023</p>
+        <button>&gt;</button>
+      </div>
+      <div class="calendar-grid">
+        <table>
+          <thead>
+            <tr>
+              <th>Mon</th>
+              <th>Tue</th>
+              <th>Wed</th>
+              <th>Thu</th>
+              <th>Fri</th>
+              <th>Sat</th>
+              <th>Sun</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>23</td> 
+              <td>24</td>
+              <td>25</td>
+              <td>26</td>
+            </tr>
+            <tr>
+              <td>27</td>
+              <td>28</td>
+              <td>29</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="patient-list">
+      <h2>Recent Patients</h2>
+      <ul>
+        <li>
+          <a href="#">
+            <img src="images/patient1.jpg" alt="Patient 1">
+            <div class="patient-info">
+              <p class="patient-name">John Doe</p>
+              <p class="last-visit">Last Visit: Jun 25, 2023</p>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <img src="images/patient2.jpg" alt="Patient 2">
+            <div class="patient-info">
+              <p class="patient-name">Jane Smith</p>
+              <p class="last-visit">Last Visit: Jun 24, 2023</p>
+            </div>
+          </a>
+        </li>
+        </ul>
+      <a href="#" class="view-all-patients">View All Patients</a>
+    </section>
+
+    <section class="quick-actions">
+      <h2>Quick Actions</h2>
+      <ul>
+        <li><a href="#"><i class="fas fa-file-prescription"></i> Prescribe Medication</a></li>
+        <li><a href="#"><i class="fas fa-file-medical-alt"></i> Request Labs</a></li>
+        <li><a href="#"><i class="fas fa-syringe"></i> Schedule Procedure</a></li>
+        </ul>
+    </section>
+
+    <section class="notes">
+      <h2>Quick Notes</h2>
+      <textarea placeholder="Add notes here..."></textarea>
+    </section>
+
+    <section class="tasks">
+      <h2>Today's Tasks</h2>
+      <ul>
+        <li>
+          <input type="checkbox"> Call John Doe for appointment follow-up.
+        </li>
+        <li>
+          <input type="checkbox"> Review lab results for Jane Smith.
+        </li>
+        </ul>
+    </section>
+
+  </main>
+</body>
+</html>
