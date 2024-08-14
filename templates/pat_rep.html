@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='pat_rep.css') }}">
+</head>
+<body>
+    <div class="report-container">
+        <h1>Patient's Report</h1>
+        <form id="scan-form" action="{{ url_for('pat_rep_data') }}" method="POST">
+            <input type="text" id="scan_no" name="scan_no" placeholder="Enter Scan Number" required>
+            <button type="submit">View Report</button>
+        </form>
+        <div id="report-data-container" style="display: none;">
+            <div id="report-data" class="report-data">
+                <p>Patient Name : <span id="patient-name"></span></p>
+                <p>Age : <span id="age"></span></p>
+                <p>Scan No : <span id="scan-no"></span></p>
+                <p>Scan Type : <span id="scan-type"></span></p>
+                <p>Prediction : <span id="prediction"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('scan-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('patient-name').textContent = data.scan_data[2];
+                document.getElementById('age').textContent = data.scan_data[3];
+                document.getElementById('scan-no').textContent = data.scan_data[4];
+                document.getElementById('scan-type').textContent = data.scan_data[1];
+                document.getElementById('prediction').textContent = data.prediction;
+                document.getElementById('report-data-container').style.display = 'block';
+                document.getElementById('scan-form').style.display = 'none';
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

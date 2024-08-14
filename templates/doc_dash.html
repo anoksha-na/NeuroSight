@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor's Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='doc_dash.css') }}">
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+</head>
+<body>
+<header class="header">
+  <div class="nav__logo">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="NeuroSight Analytics Logo">NeuroSight<span>Analytics</span>
+</div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Search reports, patient...">
+    </div>
+    <nav class="sidebar">
+      <ul>
+          <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li><a href="#"><i class="fas fa-file-medical"></i> Reports</a></li>
+          <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+          <li><a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+  </nav>
+  </header>
+
+<div class="user-info">
+  <p>Welcome, Dr. <span class="last-name">{{ session.username }} !</span></p>
+</div>
+
+  <main class="main-content">
+
+    <div class="patient-summary-box">
+      <img src="{{ url_for('static', filename='log.png') }}" alt="Logo" class="patient-summary-logo">
+      <div class="patient-summary-info">
+          <h2>Total MRI Scans Analyzed</h2>
+          <p id="mri-scans-count"></p>
+      </div>
+    </div>
+    <div class="patient-summary-box">
+      <img src="{{ url_for('static', filename='log.png') }}" alt="Logo" class="patient-summary-logo">
+      <div class="patient-summary-info">
+          <h2>Total CT Scans Analyzed</h2>
+          <p id="ct-scans-count"></p>
+      </div>
+    </div>
+    <div class="patient-summary-box">
+      <img src="{{ url_for('static', filename='log.png') }}" alt="Logo" class="patient-summary-logo">
+      <div class="patient-summary-info">
+          <h2>Total Patient's Logged-in</h2>
+          <p id="logged-in-patients-count"></p>
+      </div>
+    </div>
+    <div class="patient-summary-box">
+      <img src="{{ url_for('static', filename='log.png') }}" alt="Logo" class="patient-summary-logo">
+      <div class="patient-summary-info">
+          <h2>Patient Consultations Today</h2>
+          <p>20</p>
+      </div>
+    </div>
+
+    <div class="header__form">
+      <h2>Upload MRI/CT Scan Images</h2>
+      <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="text" id="patientName" name="patientName" placeholder="Patient Name">
+<input type="text" id="age" name="age" placeholder="Age">
+<input type="text" id="patientScanNo" name="patientScanNo" placeholder="Patient Scan No">
+
+          <select id="scanTypeSelect" name="scanType" onchange="updateOptions()">
+              <option value="" disabled selected>Scan Type</option>
+              <option value="MRI">MRI Scan</option>
+              <option value="CT">CT Scan</option>
+          </select>
+          <select id="scanCategorySelect" name="scanCategory" style="display: none;">
+              <option value="" disabled selected>Scan Category</option>
+          </select>
+          <button type="button" class="select-image" id="selectImageButton">Select Image</button>
+          <input type="file" name="image" id="file" accept="image/*" hidden>
+          <div class="img-area" data-img="">
+            <img id="preview-image">
+              <p>Image size must be less than <span>2MB</span></p>
+          </div>
+          <button type="submit" class="select-image" id="uploadImageButton">Upload Image</button>
+      </form>
+    </div>
+
+<section class="calendar">
+  <h2>Schedule Calendar</h2>
+  <div class="calendar-header">
+    <button id="prevMonthBtn">&lt;</button>
+<p id="currentMonth">April 2024</p>
+<button id="nextMonthBtn">&gt;</button>
+
+  </div>
+  <div class="calendar-grid">
+    <table>
+      <thead>
+        <tr>
+          <th>Mon</th>
+          <th>Tue</th>
+          <th>Wed</th>
+          <th>Thu</th>
+          <th>Fri</th>
+          <th>Sat</th>
+          <th>Sun</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+    </table>
+  </div>
+</section>
+
+    <section class="patient-list">
+      <h2>Recent Patient Reports</h2>
+      <ul><li>
+          <a href="#">
+            <div class="patient-info">
+              <p class="patient-name">Sanya</p>
+              <p class="last-visit">Scan Type: MRI - Brain Tumor</p>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <div class="patient-info">
+              <p class="patient-name">Harry</p>
+              <p class="last-visit">Scan Type: CT - Covid</p>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <div class="patient-info">
+              <p class="patient-name">Sumith</p>
+              <p class="last-visit">Scan Type: CT - Chest</p>
+            </div>
+          </a>
+        </li>
+        </ul>
+        <a href="{{ url_for('view_all_scans') }}" class="view-all-patients">View All Patients</a>
+    </section>
+
+    <section class="notes">
+      <h2>Quick Notes</h2>
+      <textarea placeholder="Add notes here..."></textarea>
+      
+    </section>
+  </main>
+
+<script>
+document.getElementById("file").addEventListener("change", function(event) {
+  var reader = new FileReader();
+
+  reader.onload = function(event) {
+    var img = document.getElementById("preview-image");
+    img.src = event.target.result;
+  };
+
+  reader.readAsDataURL(event.target.files[0]);
+});
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const prevMonthBtn = document.getElementById("prevMonthBtn");
+      const nextMonthBtn = document.getElementById("nextMonthBtn");
+      const currentMonthElement = document.getElementById("currentMonth");
+      const calendarBody = document.querySelector(".calendar-grid tbody");
+      let currentMonthIndex = 3; // April is index 3 (0-indexed)
+      const months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+
+      function updateCalendar(monthIndex) {
+        currentMonthElement.textContent = months[monthIndex] + " 2024";
+        calendarBody.innerHTML = ''; // Clear previous content
+
+        const daysInMonth = new Date(2024, monthIndex + 1, 0).getDate();
+        const firstDayOfMonth = new Date(2024, monthIndex, 1).getDay();
+
+        let day = 1;
+        for (let i = 0; i < 6; i++) { // 6 rows for each week
+          const row = document.createElement("tr");
+          for (let j = 0; j < 7; j++) { // 7 columns for each day of the week
+            if (i === 0 && j < firstDayOfMonth) {
+              const cell = document.createElement("td");
+              row.appendChild(cell);
+            } else if (day <= daysInMonth) {
+              const cell = document.createElement("td");
+              cell.textContent = day;
+              row.appendChild(cell);
+              day++;
+            }
+          }
+          calendarBody.appendChild(row);
+        }
+      }
+
+      prevMonthBtn.addEventListener("click", function () {
+        currentMonthIndex = (currentMonthIndex - 1 + 12) % 12; // Ensure index stays within range
+        updateCalendar(currentMonthIndex);
+      });
+
+      nextMonthBtn.addEventListener("click", function () {
+        currentMonthIndex = (currentMonthIndex + 1) % 12; // Ensure index stays within range
+        updateCalendar(currentMonthIndex);
+      });
+
+      // Initialize calendar
+      updateCalendar(currentMonthIndex);
+    });
+    </script>
+
+<script>
+  function updateOptions() {
+        var scanType = document.getElementById("scanTypeSelect").value;
+        var scanCategorySelect = document.getElementById("scanCategorySelect");
+        scanCategorySelect.innerHTML = ""; // Clear previous options
+        if (scanType === "MRI") {
+            var options = ["Brain haemorrhage", "Brain Tumor", "Alzheimer's"];
+        } else if (scanType === "CT") {
+            var options = ["Chest CT", "COVID-19"];
+        }
+        options.forEach(function(option) {
+            var optionElement = document.createElement("option");
+            optionElement.value = option;
+            optionElement.text = option;
+            scanCategorySelect.appendChild(optionElement);
+        });
+        scanCategorySelect.style.display = "block";
+    }
+
+    document.getElementById("scanTypeSelect").addEventListener("change", function() {
+        document.getElementById("scanCategorySelect").style.display = "block";
+    });
+
+    document.getElementById("selectImageButton").addEventListener("click", function() {
+    const fileInput = document.getElementById("file");
+    fileInput.click();
+});
+
+document.getElementById("uploadImageButton").addEventListener("click", function() {
+    document.getElementById("uploadForm").submit();
+});
+
+document.getElementById("patientName").addEventListener("input", function() {
+  if (this.value) {
+    this.style.backgroundColor = "var(--primary-color-light)";
+    this.style.color = "var(--text-dark)"; // Change the text color to ensure contrast
+  } else {
+    this.style.backgroundColor = ""; // Reset the background color if the input is empty
+    this.style.color = ""; // Reset the text color if the input is empty
+  }
+});
+
+document.getElementById("age").addEventListener("input", function() {
+  if (this.value) {
+    this.style.backgroundColor = "var(--primary-color-light)";
+    this.style.color = "var(----text-dark)"; // Change the text color to ensure contrast
+  } else {
+    this.style.backgroundColor = ""; // Reset the background color if the input is empty
+    this.style.color = ""; // Reset the text color if the input is empty
+  }
+});
+
+document.getElementById("patientScanNo").addEventListener("input", function() {
+  if (this.value) {
+    this.style.backgroundColor = "var(--primary-color-light)";
+    this.style.color = "var(--text-dark)"; // Change the text color to ensure contrast
+  } else {
+    this.style.backgroundColor = ""; // Reset the background color if the input is empty
+    this.style.color = ""; // Reset the text color if the input is empty
+  }
+});
+
+function fetchCounts() {
+  fetch('/get_counts')
+    .then(response => response.json())
+    .then(data => {
+      const mriScansCount = data.mriScansCount || '0';
+      const ctScansCount = data.ctScansCount || '0';
+      const loggedInPatientsCount = data.loggedInPatientsCount || '0';
+
+      document.getElementById('mri-scans-count').innerText = mriScansCount;
+      document.getElementById('mri-scans-count').textContent = mriScansCount;
+
+      document.getElementById('ct-scans-count').innerText = ctScansCount;
+      document.getElementById('ct-scans-count').textContent = ctScansCount;
+
+      document.getElementById('logged-in-patients-count').innerText = loggedInPatientsCount;
+      document.getElementById('logged-in-patients-count').textContent = loggedInPatientsCount;
+    })
+    .catch(error => {
+      console.error('Error fetching counts:', error);
+      document.getElementById('mri-scans-count').innerText = 'Error fetching count';
+      document.getElementById('ct-scans-count').innerText = 'Error fetching count';
+      document.getElementById('logged-in-patients-count').innerText = 'Error fetching count';
+    });
+}
+
+fetchCounts();
+setInterval(fetchCounts, 10000);
+
+</script> 
+<script src="{{ url_for('static', filename='upload.js') }}"></script>
+</body>
+</html>

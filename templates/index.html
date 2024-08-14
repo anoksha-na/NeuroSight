@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-+YlgJ50xs1V+7NvUokbzTUUPpgGtqZ7XkwN/dkT4dlsT3V1XyF/jhIFxZaa+78voVqT98GbsMl/tN0X9v0+ycQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <div class="nav__logo">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="NeuroSight Analytics Logo">NeuroSight<span>Analytics</span>
+    </div>
+    <h1><center>Welcome to the Chatbot!</center></h1>
+    <div id="chat-container"></div>
+    <form id="chat-form" action="/index_chat" method="POST">
+        <input type="text" id="user-input" name="question" placeholder="Enter your message...">
+        <button type="submit" id="send-button">&#10140;</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('chat-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const userInput = document.getElementById('user-input').value.trim();
+                if (userInput !== '') {
+                    const chatContainer = document.getElementById('chat-container');
+                    fetch('/index_chat', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ question: userInput })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            const botMessage = document.createElement('div');
+                            botMessage.classList.add('message', 'bot-message');
+                            botMessage.textContent = 'Bot: ' + data.response;
+
+                            const userMessage = document.createElement('div');
+                            userMessage.classList.add('message', 'user-message');
+                            userMessage.textContent = '{{ session.username }}: ' + userInput; // retrieve the patient's name from the session variable
+
+                            chatContainer.appendChild(userMessage);
+                            chatContainer.appendChild(botMessage);
+                            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
+                            document.getElementById('user-input').value = '';
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

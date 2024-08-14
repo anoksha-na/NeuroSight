@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='result.css') }}">
+</head>
+<body>
+    <div class="result-container">
+        <h1>Scan Result</h1>
+        <p>Patient Name: {{ patient_name }}</p>
+        <p>Age: {{ patient_age }}</p>
+        <p>Scan No: {{ scan_no }}</p>
+        <p>Scan Type: {{ scan_type }}</p>
+        <p>Scan Category: {{ scan_category }}</p>
+        {% if image_filename %}
+    <img src="{{ url_for('uploaded_file', filename=image_filename) }}" alt="Uploaded Image">
+{% endif %}
+        <p>Prediction: {{ prediction }}</p>
+    </div>
+</body>
+</html>
