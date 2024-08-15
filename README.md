@@ -72,9 +72,9 @@ NeuroSight Analytics is a web application designed to predict medical conditions
 
 ## Usage
 
-1. Open the web application in your browser.
-2. Upload an MRI or CT scan image using the provided interface.
-3. View the predicted medical condition displayed on the results page.
+1. Open the web application in your browser and login as Doctor or Patient.
+2. Upload an MRI or CT scan image using the provided interface (as Doctors).
+3. View the predicted medical condition displayed on the results page (as Patients).
 
 ## License
 
